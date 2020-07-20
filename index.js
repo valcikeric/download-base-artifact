@@ -209,7 +209,10 @@ async function downloadBaseArtifact(
 
 	let workflowRun,
 		warningMessage = "";
-	if (commitRun && commitRun.conclusion == "success") {
+	if (
+		commitRun &&
+		(commitRun.conclusion == "success" || inputs.allowfail == "true")
+	) {
 		workflowRun = commitRun;
 	} else {
 		if (!commitRun) {

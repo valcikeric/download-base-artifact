@@ -8034,7 +8034,7 @@ async function downloadBaseArtifact(
 
 	let workflowRun,
 		warningMessage = "";
-	if (commitRun && commitRun.conclusion == "success") {
+	if (commitRun && (commitRun.conclusion == "success" ||  inputs.allowfail == "true")) {
 		workflowRun = commitRun;
 	} else {
 		if (!commitRun) {
@@ -8128,9 +8128,10 @@ const { downloadBaseArtifact: downloadBaseArtifact$1 } = downloadBaseArtifact_1;
 		const workflow = core.getInput("workflow", { required: false });
 		const artifact = core.getInput("artifact", { required: true });
 		const path = core.getInput("path", { required: false });
+		const allowfail = core.getInput("allow-fail", { required: false});
 
 		const octokit = github.getOctokit(token);
-		const inputs = { workflow, artifact, path };
+		const inputs = { workflow, artifact, path, allowfail };
 
 		core.debug("Inputs: " + JSON.stringify(inputs, null, 2));
 		core.debug("Context: " + JSON.stringify(github.context, undefined, 2));

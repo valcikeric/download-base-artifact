@@ -19,6 +19,10 @@ inputs:
   path:
     description: "The path to download the artifact to. Defaults to the current working directory."
     required: false
+  allow-fail:
+    description: "Type in 'true' if you want to ignore if the latest runs failed."
+    required: false
+    default: "false"
 runs:
   using: "node12"
   main: "dist/action.js"
