@@ -8002,13 +8002,11 @@ async function downloadBaseArtifact(
 
 	// 2. Determine base commit
 	let baseCommit, baseRef;
-	if (context.eventName == "push" || context.eventName == "schedule") {
+	if (context.eventName == "push") {
 		baseCommit = context.payload.before;
 		baseRef = context.payload.ref;
-        if (context.eventName == "schedule") {
-		    log.info(`This event is scheduled.`);
-        }
-		log.info(`Ref of push is ${baseRef}`);
+		
+        log.info(`Ref of push is ${baseRef}`);
 		log.info(`Previous commit before push is ${baseCommit}`);
 	} else if (context.eventName == "pull_request") {
 		baseCommit = context.payload.pull_request.base.sha;
@@ -8016,7 +8014,12 @@ async function downloadBaseArtifact(
 
 		log.info(`Base ref of pull request is ${baseRef}`);
 		log.info(`Base commit of pull request is ${baseCommit}`);
-	} else {
+    } else if (context.eventName == "schedule") {
+        baseCommit = "undefined";
+        baseRef = "undefined";
+
+        log.info(`Scheduled run`);
+    } else {
 		throw new Error(
 			`Unsupported eventName in github.context: ${context.eventName}`
 		);
@@ -8140,6 +8143,9 @@ const { downloadBaseArtifact: downloadBaseArtifact$1 } = downloadBaseArtifact_1;
 
 		core.debug("Inputs: " + JSON.stringify(inputs, null, 2));
 		core.debug("Context: " + JSON.stringify(github.context, undefined, 2));
+
+        const context = JSON.stringify(github.context, undefined, 2);
+        console.log(`The event context: ${context}`);
 
 		const actionLogger = {
 			warn(msg) {

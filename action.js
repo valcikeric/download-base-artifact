@@ -16,6 +16,9 @@ const { downloadBaseArtifact } = require("./index");
 		core.debug("Inputs: " + JSON.stringify(inputs, null, 2));
 		core.debug("Context: " + JSON.stringify(github.context, undefined, 2));
 
+		const context = JSON.stringify(github.context, undefined, 2);
+		console.log(`The event context: ${context}`);
+
 		const actionLogger = {
 			warn(msg) {
 				core.warning(msg);
