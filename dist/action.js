@@ -8042,9 +8042,10 @@ async function downloadBaseArtifact(
 	) {
 		workflowRun = commitRun;
 	} else {
-		if (!commitRun) {
+
+        if (!commitRun) {
 			warningMessage += `Could not find workflow run for ${baseCommit}.`;
-		} else if (commitRun.conclusion !== "success") {
+        } else if (commitRun.conclusion !== "success") {
 			warningMessage += `Workflow run for ${baseCommit} (${workflow.name}#${commitRun.run_number}) was not successful. Conclusion was "${commitRun.conclusion}".`;
 		}
 
@@ -8056,7 +8057,7 @@ async function downloadBaseArtifact(
 		}
 	}
 
-	if (warningMessage !== "") {
+	if (warningMessage !== "" && context.eventName !== "schedule") {
 		log.warn(warningMessage);
 	}
 

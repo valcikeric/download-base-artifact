@@ -231,7 +231,7 @@ async function downloadBaseArtifact(
 		}
 	}
 
-	if (warningMessage !== "") {
+	if (warningMessage !== "" && context.eventName !== "schedule") {
 		log.warn(warningMessage);
 	}
 
