@@ -177,10 +177,11 @@ async function downloadBaseArtifact(
 
 	// 2. Determine base commit
 	let baseCommit, baseRef;
-	if (context.eventName == "push") {
+	if (context.eventName == "push" || context.eventName == "schedule") {
 		baseCommit = context.payload.before;
 		baseRef = context.payload.ref;
 
+		log.info(`This event is scheduled.`);
 		log.info(`Ref of push is ${baseRef}`);
 		log.info(`Previous commit before push is ${baseCommit}`);
 	} else if (context.eventName == "pull_request") {

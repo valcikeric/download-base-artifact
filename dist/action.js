@@ -8002,10 +8002,11 @@ async function downloadBaseArtifact(
 
 	// 2. Determine base commit
 	let baseCommit, baseRef;
-	if (context.eventName == "push") {
+	if (context.eventName == "push" || context.eventName == "schedule") {
 		baseCommit = context.payload.before;
 		baseRef = context.payload.ref;
 
+        log.info(`This event is scheduled.`);
 		log.info(`Ref of push is ${baseRef}`);
 		log.info(`Previous commit before push is ${baseCommit}`);
 	} else if (context.eventName == "pull_request") {
@@ -8034,7 +8035,10 @@ async function downloadBaseArtifact(
 
 	let workflowRun,
 		warningMessage = "";
-	if (commitRun && (commitRun.conclusion == "success" ||  inputs.allowfail == "true")) {
+	if (
+		commitRun &&
+		(commitRun.conclusion == "success" || inputs.allowfail == "true")
+	) {
 		workflowRun = commitRun;
 	} else {
 		if (!commitRun) {
@@ -8128,7 +8132,7 @@ const { downloadBaseArtifact: downloadBaseArtifact$1 } = downloadBaseArtifact_1;
 		const workflow = core.getInput("workflow", { required: false });
 		const artifact = core.getInput("artifact", { required: true });
 		const path = core.getInput("path", { required: false });
-		const allowfail = core.getInput("allow-fail", { required: false});
+		const allowfail = core.getInput("allow-fail", { required: false });
 
 		const octokit = github.getOctokit(token);
 		const inputs = { workflow, artifact, path, allowfail };
