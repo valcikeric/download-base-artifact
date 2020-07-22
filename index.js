@@ -190,9 +190,6 @@ async function downloadBaseArtifact(
 		log.info(`Base ref of pull request is ${baseRef}`);
 		log.info(`Base commit of pull request is ${baseCommit}`);
 	} else if (context.eventName == "schedule") {
-		baseCommit = undefined;
-		baseRef = undefined;
-
 		log.info(`Scheduled run`);
 	} else {
 		throw new Error(
