@@ -8005,8 +8005,9 @@ async function downloadBaseArtifact(
 	if (context.eventName == "push" || context.eventName == "schedule") {
 		baseCommit = context.payload.before;
 		baseRef = context.payload.ref;
-
-        log.info(`This event is scheduled.`);
+        if (context.eventName == "schedule") {
+		    log.info(`This event is scheduled.`);
+        }
 		log.info(`Ref of push is ${baseRef}`);
 		log.info(`Previous commit before push is ${baseCommit}`);
 	} else if (context.eventName == "pull_request") {
