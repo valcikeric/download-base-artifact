@@ -177,7 +177,7 @@ async function downloadBaseArtifact(
 
 	// 2. Determine base commit
 	let baseCommit, baseRef;
-	if (context.eventName == "push") {
+	if (context.eventName == "push" || context.eventName == "schedule") {
 		baseCommit = context.payload.before;
 		baseRef = context.payload.ref;
 
@@ -189,8 +189,6 @@ async function downloadBaseArtifact(
 
 		log.info(`Base ref of pull request is ${baseRef}`);
 		log.info(`Base commit of pull request is ${baseCommit}`);
-	} else if (context.eventName == "schedule") {
-		log.info(`Scheduled run`);
 	} else {
 		throw new Error(
 			`Unsupported eventName in github.context: ${context.eventName}`
