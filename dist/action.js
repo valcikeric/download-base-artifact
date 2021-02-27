@@ -7944,7 +7944,7 @@ async function getWorkflowFromFile(client, repo, file) {
  * @param {string} ref Branch commit should be found on
  * @returns {Promise<[import('./global').WorkflowRunData | undefined, import('./global').WorkflowRunData]>}
  */
-async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref) {
+async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref, allowfail) {
 	/** @type {import('./global').WorkflowRunData} */
 	let runForCommit, lkgRun;
 
@@ -7968,7 +7968,7 @@ async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref) {
 
 		for (let run of page.data) {
 			// Get the last successful workflow run for the base ref
-			if (lkgRun == null && (run.conclusion == "success" || inputs.allowfail)) {
+			if (lkgRun == null && (run.conclusion == "success" || allowfail)) {
 				lkgRun = run;
 			}
 
@@ -8090,7 +8090,8 @@ async function downloadBaseArtifact(
 		repo,
 		workflow.id,
 		baseCommit,
-		baseRef
+		baseRef,
+		inputs.allowfail
 	);
 
 	log.debug(() => `Commit Run: ${JSON.stringify(commitRun, null, 2)}`);
