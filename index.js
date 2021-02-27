@@ -81,7 +81,7 @@ async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref) {
 
 		for (let run of page.data) {
 			// Get the last successful workflow run for the base ref
-			if (lkgRun == null && run.conclusion == "success") {
+			if (lkgRun == null && (run.conclusion == "success" || inputs.allowfail)) {
 				lkgRun = run;
 			}
 
