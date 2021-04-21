@@ -57,7 +57,14 @@ async function getWorkflowFromFile(client, repo, file) {
  * @param {string} ref Branch commit should be found on
  * @returns {Promise<[import('./global').WorkflowRunData | undefined, import('./global').WorkflowRunData]>}
  */
-async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref) {
+async function getWorkflowRunForCommit(
+	client,
+	repo,
+	workflow_id,
+	commit,
+	ref,
+	allowfail
+) {
 	/** @type {import('./global').WorkflowRunData} */
 	let runForCommit, lkgRun;
 
@@ -81,7 +88,11 @@ async function getWorkflowRunForCommit(client, repo, workflow_id, commit, ref) {
 
 		for (let run of page.data) {
 			// Get the last successful workflow run for the base ref
-			if (lkgRun == null && run.conclusion == "success") {
+			if (
+				lkgRun == null &&
+				(run.conclusion == "success" ||
+					(allowfail && run.conclusion == "failure"))
+			) {
 				lkgRun = run;
 			}
 
@@ -189,6 +200,8 @@ async function downloadBaseArtifact(
 
 		log.info(`Base ref of pull request is ${baseRef}`);
 		log.info(`Base commit of pull request is ${baseCommit}`);
+	} else if (context.eventName == "schedule") {
+		log.info(`Scheduled run`);
 	} else {
 		throw new Error(
 			`Unsupported eventName in github.context: ${context.eventName}`
@@ -201,7 +214,8 @@ async function downloadBaseArtifact(
 		repo,
 		workflow.id,
 		baseCommit,
-		baseRef
+		baseRef,
+		inputs.allowfail
 	);
 
 	log.debug(() => `Commit Run: ${JSON.stringify(commitRun, null, 2)}`);
@@ -209,7 +223,10 @@ async function downloadBaseArtifact(
 
 	let workflowRun,
 		warningMessage = "";
-	if (commitRun && commitRun.conclusion == "success") {
+	if (
+		commitRun &&
+		(commitRun.conclusion == "success" || inputs.allowfail == "true")
+	) {
 		workflowRun = commitRun;
 	} else {
 		if (!commitRun) {
@@ -226,7 +243,7 @@ async function downloadBaseArtifact(
 		}
 	}
 
-	if (warningMessage !== "") {
+	if (warningMessage !== "" && context.eventName !== "schedule") {
 		log.warn(warningMessage);
 	}
 
