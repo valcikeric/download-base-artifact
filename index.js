@@ -202,6 +202,8 @@ async function downloadBaseArtifact(
 		log.info(`Base commit of pull request is ${baseCommit}`);
 	} else if (context.eventName == "schedule") {
 		log.info(`Scheduled run`);
+		// DEMONSTRATION CHANGE
+		log.info(`scheduled dddd .`);
 	} else {
 		throw new Error(
 			`Unsupported eventName in github.context: ${context.eventName}`

@@ -271,6 +271,7 @@ exports.getInput = getInput;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
+    process.stdout.write(os$1.EOL);
     command.issueCommand('set-output', { name }, value);
 }
 exports.setOutput = setOutput;
@@ -7975,7 +7976,11 @@ async function getWorkflowRunForCommit(
 
 		for (let run of page.data) {
 			// Get the last successful workflow run for the base ref
-			if (lkgRun == null && (run.conclusion == "success" || (allowfail && run.conclusion == "failure"))) {
+			if (
+				lkgRun == null &&
+				(run.conclusion == "success" ||
+					(allowfail && run.conclusion == "failure"))
+			) {
 				lkgRun = run;
 			}
 
@@ -8085,6 +8090,8 @@ async function downloadBaseArtifact(
 		log.info(`Base commit of pull request is ${baseCommit}`);
 	} else if (context.eventName == "schedule") {
 		log.info(`Scheduled run`);
+		// DEMONSTRATION CHANGE
+		log.info(`scheduled dddd .`);
 	} else {
 		throw new Error(
 			`Unsupported eventName in github.context: ${context.eventName}`
